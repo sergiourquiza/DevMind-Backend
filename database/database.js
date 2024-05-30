@@ -10,7 +10,6 @@ async function checkDatabaseExists() {
         await sequelize.authenticate();
         const result = await sequelize.query("SELECT 1 FROM pg_database WHERE datname = 'DevMindDB'");
         if (result[0].length === 0) {
-           
             await sequelize.query("CREATE DATABASE DevMindDB");
             console.log("La base de datos ha sido creada exitosamente miau.");
         } else {
