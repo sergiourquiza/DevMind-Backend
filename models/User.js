@@ -1,28 +1,43 @@
-import { sequelize } from "../database/database.js";
-import { DataTypes } from "sequelize";
-
-export const User = sequelize.define("User", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    username : {
-        type: DataTypes.STRING(100),
-    },
-    email : {
-        type: DataTypes.STRING(100),
-    },
-    password : {
-        type: DataTypes.STRING(255),
-    },
-    auth_font : {
-        type: DataTypes.STRING(50),
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      User.hasMany(models.Progress, { foreignKey: 'userId' });
+      User.hasMany(models.UserExercise, { foreignKey: 'userId' });
     }
-}, {
-    timestamps: false,
-});
+  }
+  User.init({
+    googleId: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      unique: false,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true
+    } 
+  }, {
+    sequelize,
+    modelName: 'User',
+  });
+  return User;
+};

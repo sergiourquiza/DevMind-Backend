@@ -1,29 +1,39 @@
-import { sequelize } from "../database/database.js";
-import { DataTypes } from "sequelize";
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Exercise extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Exercise.belongsTo(models.Module, { foreignKey: 'moduleId' });
+      Exercise.belongsTo(models.Difficulty, { foreignKey: 'difficultyId' });
 
-export const Exercise = sequelize.define("Exercise", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    moduleId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Module',
-            key: 'id'
-        }
-    },
-    difficultyId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Difficulty',
-            key: 'id'
-        }
-    },
-    description : {
-        type: DataTypes.TEXT,
+      Exercise.hasMany(models.Answer, { foreignKey: 'exerciseId' });
+      Exercise.hasMany(models.UserExercise, { foreignKey: 'exerciseId' });
     }
-}, {
-    timestamps: false,
-});
+  }
+  Exercise.init({
+    moduleId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    difficultyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    } 
+  }, {
+    sequelize,
+    modelName: 'Exercise',
+  });
+  return Exercise;
+};

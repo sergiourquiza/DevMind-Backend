@@ -1,30 +1,32 @@
-import { sequelize } from "../database/database.js";
-import { DataTypes } from "sequelize";
-
-export const UserExercise = sequelize.define("UserExercise", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    userId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'User',
-            key: 'id'
-        }
-    },
-    exerciseId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Exercise',
-            key: 'id'
-        }
-    },
-    createdAt: {
-        type: DataTypes.DATE
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class UserExercise extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      UserExercise.belongsTo(models.User, { foreignKey: 'userId' });
+      UserExercise.belongsTo(models.Exercise, { foreignKey: 'exerciseId' });
     }
-    
-}, {
-    timestamps: false,
-});
+  }
+  UserExercise.init({
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }, 
+    exerciseId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
+  }, {
+    sequelize,
+    modelName: 'UserExercise',
+  });
+  return UserExercise;
+};

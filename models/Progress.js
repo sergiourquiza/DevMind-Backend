@@ -1,29 +1,36 @@
-import { sequelize } from "../database/database.js";
-import { DataTypes } from "sequelize";
-
-export const Progress = sequelize.define("Progress", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    userId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'User',
-            key: 'id'
-        }
-    },
-    moduleId : {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Module',
-            key: 'id'
-        }
-    },
-    progress_percentage : {
-        type: DataTypes.FLOAT,
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Progress extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Progress.belongsTo(models.User, { foreignKey: 'userId' });
+      Progress.belongsTo(models.Module, { foreignKey: 'moduleId' });
     }
-}, {
-    timestamps: false,
-});
+  }
+  Progress.init({
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    moduleId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    progressPercentage: {
+      type: DataTypes.DECIMAL(3, 2),
+      allowNull: true
+    }
+  }, {
+    sequelize,
+    modelName: 'Progress',
+  });
+  return Progress;
+};

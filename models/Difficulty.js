@@ -1,15 +1,27 @@
-import { sequelize } from "../database/database.js";
-import { DataTypes } from "sequelize";
-
-export const Difficulty = sequelize.define("Difficulty", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    name : {
-        type: DataTypes.STRING(100),
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Difficulty extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Difficulty.hasMany(models.Exercise, { foreignKey: 'difficultyId' });
     }
-}, {
-    timestamps: false,
-});
+  }
+  Difficulty.init({
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  }, {
+    sequelize,
+    modelName: 'Difficulty',
+  });
+  return Difficulty;
+};
