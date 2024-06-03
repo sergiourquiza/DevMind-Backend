@@ -5,6 +5,9 @@ const routes = require('./routes');
 // Middleware
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('--- Bienvenidos a la API de DEV|MIND, A LA ORDEN PARA EL DESORNDEN 😊 ---');
+});
 
 // Usar las rutas
 app.use('/', routes);
