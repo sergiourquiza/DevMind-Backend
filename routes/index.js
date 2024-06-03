@@ -9,6 +9,7 @@ const progressRoutes = require('./progressRoutes');
 const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const theoryRoutes = require('./theoryRoutes');
+const excerciseRoutes = require('./exerciseRoutes'); 
 
 // Usar las rutas
 router.use('/difficulties', difficultyRoutes);
@@ -17,5 +18,6 @@ router.use('/modules', moduleRoutes);
 router.use('/progresses', progressRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
-router.use('/theory', theoryRoutes);
+router.use('/theories', theoryRoutes);
+router.use('/exercises', excerciseRoutes);
 module.exports = router;
