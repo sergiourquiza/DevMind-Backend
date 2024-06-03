@@ -6,5 +6,4 @@ const difficultyRoutes = require('./difficultyRoutes');
 
 // Usar las rutas
 router.use('/difficulties', difficultyRoutes);
-
 module.exports = router;
