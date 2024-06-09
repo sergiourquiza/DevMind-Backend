@@ -1,5 +1,10 @@
 const { Answer } = require('../models');
 
+/**
+ * Controller function to retrieve all answers.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getAll = async (req, res) => {
   try {
     const answers = await Answer.findAll();
@@ -9,12 +14,17 @@ exports.getAll = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to retrieve a specific answer by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
     const answer = await Answer.findByPk(id);
     if (!answer) {
-      return res.status(404).json({ message: 'Respuesta no encontrada' });
+      return res.status(404).json({ message: 'Answer not found' });
     }
     res.json(answer);
   } catch (error) {
@@ -22,6 +32,11 @@ exports.getById = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to create a new answer.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
     const { exerciseId, answer } = req.body;
     try {
@@ -32,30 +47,40 @@ exports.create = async (req, res) => {
     }
 };
 
+/**
+ * Controller function to update an existing answer by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.update = async (req, res) => {
   const { id } = req.params;
   const { exerciseId, answer } = req.body;
   try {
-    const answer = await Answer.findByPk(id);
-    if (!answer) {
+    const existingAnswer = await Answer.findByPk(id);
+    if (!existingAnswer) {
       return res.status(404).json({ message: 'Answer not found' });
     }
-    await answer.update({ exerciseId, answer });
+    await existingAnswer.update({ exerciseId, answer });
     res.json({ message: 'Answer updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+/**
+ * Controller function to delete an answer by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.delete = async (req, res) => {
   const { id } = req.params;
   try {
-    const difficulty = await Difficulty.findByPk(id);
-    if (!difficulty) {
-      return res.status(404).json({ message: 'Difficulty not found' });
+    const answer = await Answer.findByPk(id);
+    if (!answer) {
+      return res.status(404).json({ message: 'Answer not found' });
     }
-    await difficulty.destroy();
-    res.json({ message: 'Difficulty deleted successfully' });
+    await answer.destroy();
+    res.json({ message: 'Answer deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

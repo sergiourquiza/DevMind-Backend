@@ -1,17 +1,25 @@
-const Theory = require('../models/Theory');
+const { Theory } = require('../models');
 
-// Crear una nueva teoría
+/**
+ * Controller function to create a new theory.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
-  const {moduleId,description} = req.body;
+  const { moduleId, description } = req.body;
   try {
-    const newTheory = await Theory.create({ moduleId,description });
+    const newTheory = await Theory.create({ moduleId, description });
     res.status(201).json(newTheory);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// Obtener todas las teorías
+/**
+ * Controller function to retrieve all theories.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.findAll = async (req, res) => {
   try {
     const theories = await Theory.findAll();
@@ -21,11 +29,15 @@ exports.findAll = async (req, res) => {
   }
 };
 
-// Obtener una teoría por ID
+/**
+ * Controller function to retrieve a specific theory by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.findOne = async (req, res) => {
-  const { theoryId } = req.params;
+  const { id } = req.params;
   try {
-    const theory = await Theory.findByPk(theoryId);
+    const theory = await Theory.findByPk(id);
     if (!theory) {
       return res.status(404).json({ message: 'Theory not found' });
     }
@@ -35,27 +47,35 @@ exports.findOne = async (req, res) => {
   }
 };
 
-// Actualizar una teoría por ID
+/**
+ * Controller function to update an existing theory by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.update = async (req, res) => {
-  const { theoryId } = req.params;
-  const { moduleId,description } = req.body;
+  const { id } = req.params;
+  const { moduleId, description } = req.body;
   try {
-    const theory = await Theory.findByPk(theoryId);
+    const theory = await Theory.findByPk(id);
     if (!theory) {
       return res.status(404).json({ message: 'Theory not found' });
     }
-    await theory.update({ moduleId,description });
+    await theory.update({ moduleId, description });
     res.status(200).json({ message: 'Theory updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// Eliminar una teoría por ID
+/**
+ * Controller function to delete a theory by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.delete = async (req, res) => {
-  const { theoryId } = req.params;
+  const { id } = req.params;
   try {
-    const theory = await Theory.findByPk(theoryId);
+    const theory = await Theory.findByPk(id);
     if (!theory) {
       return res.status(404).json({ message: 'Theory not found' });
     }

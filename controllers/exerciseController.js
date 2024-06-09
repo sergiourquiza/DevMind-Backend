@@ -1,6 +1,10 @@
 const { Exercise } = require('../models');
 
-// Crear un nuevo ejercicio
+/**
+ * Controller function to create a new exercise.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
   const { moduleId, difficultyId, description } = req.body;
   try {
@@ -11,7 +15,11 @@ exports.create = async (req, res) => {
   }
 };
 
-// Obtener todos los ejercicios
+/**
+ * Controller function to retrieve all exercises.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getAll = async (req, res) => {
   try {
     const exercises = await Exercise.findAll();
@@ -21,11 +29,15 @@ exports.getAll = async (req, res) => {
   } 
 };
 
-// Obtener un ejercicio por ID
+/**
+ * Controller function to retrieve a specific exercise by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getById = async (req, res) => {
-  const { exerciseId } = req.params;
+  const { id } = req.params;
   try {
-    const exercise = await Exercise.findByPk(exerciseId);
+    const exercise = await Exercise.findByPk(id);
     if (!exercise) {
       return res.status(404).json({ message: 'Exercise not found' });
     }
@@ -35,12 +47,16 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Actualizar un ejercicio por ID
+/**
+ * Controller function to update an existing exercise by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.update = async (req, res) => {
-  const { exerciseId } = req.params;
+  const { id } = req.params;
   const { moduleId, difficultyId, description } = req.body;
   try {
-    const exercise = await Exercise.findByPk(exerciseId);
+    const exercise = await Exercise.findByPk(id);
     if (!exercise) {
       return res.status(404).json({ message: 'Exercise not found' });
     }
@@ -51,11 +67,15 @@ exports.update = async (req, res) => {
   }
 };
 
-// Eliminar un ejercicio por ID
+/**
+ * Controller function to delete an exercise by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.delete = async (req, res) => {
-  const { exerciseId } = req.params;
+  const { id } = req.params;
   try {
-    const exercise = await Exercise.findByPk(exerciseId);
+    const exercise = await Exercise.findByPk(id);
     if (!exercise) {
       return res.status(404).json({ message: 'Exercise not found' });
     }

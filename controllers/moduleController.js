@@ -1,5 +1,10 @@
 const { Module } = require('../models');
 
+/**
+ * Controller function to retrieve all modules.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getAll = async (req, res) => {
   try {
     const modules = await Module.findAll();
@@ -9,6 +14,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to retrieve a specific module by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -22,6 +32,11 @@ exports.getById = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to create a new module.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
     const { name, description } = req.body;
     try {
@@ -32,6 +47,11 @@ exports.create = async (req, res) => {
     }
 };
 
+/**
+ * Controller function to update an existing module by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.update = async (req, res) => {
   const { id } = req.params;
   const { name, description } = req.body;
@@ -47,6 +67,11 @@ exports.update = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to delete a module by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.delete = async (req, res) => {
   const { id } = req.params;
   try {

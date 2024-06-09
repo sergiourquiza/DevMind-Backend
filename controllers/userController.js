@@ -1,7 +1,11 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 
-//LLamar todos los usuarios
+/**
+ * Retrieves all users from the database.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getAll = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -11,13 +15,17 @@ exports.getAll = async (req, res) => {
   }
 };
 
-//Obtener un usuario por su id
+/**
+ * Retrieves a user by their ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: 'No encontramos el usuario' });
+      return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
   } catch (error) {
@@ -25,59 +33,70 @@ exports.getById = async (req, res) => {
   }
 };
 
-//Crear un usuario con contraseña encriptada y verificar si el usuario ya existe
+/**
+ * Creates a new user with encrypted password and checks if the user already exists based on email or username.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
-    const { username, email, password, googleId } = req.body;
-    const hashedPassword = bcrypt.hashSync(password, 10);
-  
-    try {
-      // Verificar si el usuario ya existe por email o username
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ error: 'El usuario ingresado ya existe' });
-      }
-  
-      const newUser = await User.create({
-        username,
-        email,
-        password: hashedPassword,
-        googleId
-      });
-  
-      res.status(201).json(newUser);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+  const { username, email, password, googleId } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'The user already exists' });
     }
-  };
 
-  //Acutualizar contraseña
-    exports.update = async (req, res) => {
-        const { id } = req.params;
-        const { password } = req.body;
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        try {
-        const user = await User.findByPk(id);
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-        await user.update({ password: hashedPassword });
-        res.json({ message: 'Contraseña actualizada correctamente' });
-        } catch (error) {
-        res.status(400).json({ error: error.message });
-        }
-    };
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      googleId
+    });
 
-    //Eliminar cuenta de usuario 
-    exports.delete = async (req, res) => {
-        const { id } = req.params;
-        try {
-        const user = await User.findByPk(id);
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-        await user.destroy();
-        res.json({ message: 'Usuario eliminado satisfactoriamente de la base de datos' });
-        } catch (error) {
-        res.status(500).json({ error: error.message });
-        }
-    };
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Updates the password of a user by their ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.update = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    await user.update({ password: hashedPassword });
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Deletes a user account from the database.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.delete = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    await user.destroy();
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -1,5 +1,11 @@
 const { UserExercise } = require('../models');
 
+/**
+ * Get all user exercises.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response containing all user exercises.
+ */
 exports.getAll = async (req, res) => {
   try {
     const userExercises = await UserExercise.findAll();
@@ -9,6 +15,12 @@ exports.getAll = async (req, res) => {
   }
 };
 
+/**
+ * Get a user exercise by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response containing the user exercise.
+ */
 exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -22,16 +34,28 @@ exports.getById = async (req, res) => {
   }
 };
 
+/**
+ * Create a new user exercise.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response containing the newly created user exercise.
+ */
 exports.create = async (req, res) => {
-    const { userId, exerciseId } = req.body;
-    try {
-        const newUserExercise = await UserExercise.create({ userId, exerciseId });
-        res.status(201).json(newUserExercise);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+  const { userId, exerciseId } = req.body;
+  try {
+    const newUserExercise = await UserExercise.create({ userId, exerciseId });
+    res.status(201).json(newUserExercise);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
+/**
+ * Update a user exercise by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response confirming the update.
+ */
 exports.update = async (req, res) => {
   const { id } = req.params;
   const { userId, exerciseId } = req.body;
@@ -47,6 +71,12 @@ exports.update = async (req, res) => {
   }
 };
 
+/**
+ * Delete a user exercise by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response confirming the deletion.
+ */
 exports.delete = async (req, res) => {
   const { id } = req.params;
   try {
