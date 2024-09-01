@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>models/Progress.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Answer.html">Answer</a><ul class='methods'><li data-type='method'><a href="Answer.html#.associate">associate</a></li></ul></li><li><a href="Difficulty.html">Difficulty</a><ul class='methods'><li data-type='method'><a href="Difficulty.html#.associate">associate</a></li></ul></li><li><a href="Exercise.html">Exercise</a><ul class='methods'><li data-type='method'><a href="Exercise.html#.associate">associate</a></li></ul></li><li><a href="Module.html">Module</a><ul class='methods'><li data-type='method'><a href="Module.html#.associate">associate</a></li></ul></li><li><a href="Progress.html">Progress</a><ul class='methods'><li data-type='method'><a href="Progress.html#.associate">associate</a></li></ul></li><li><a href="Theory.html">Theory</a><ul class='methods'><li data-type='method'><a href="Theory.html#.associate">associate</a></li></ul></li><li><a href="User.html">User</a><ul class='methods'><li data-type='method'><a href="User.html#.associate">associate</a></li></ul></li><li><a href="UserExercise.html">UserExercise</a><ul class='methods'><li data-type='method'><a href="UserExercise.html#.associate">associate</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Index.html">Index</a></li><li><a href="module-routes_index.html">routes/index</a><ul class='methods'><li data-type='method'><a href="module-routes_index.html#.router">router</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#create">create</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#findAll">findAll</a></li><li><a href="global.html#findOne">findOne</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#googleAuth">googleAuth</a></li><li><a href="global.html#googleCallback">googleCallback</a></li><li><a href="global.html#googleRedirect">googleRedirect</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#protected">protected</a></li><li><a href="global.html#router">router</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#update">update</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">models/Progress.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+const {
+  Model
+} = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+  /**
+   * Class representing a Progress.
+   * @extends Model
+   */
+  class Progress extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     * @static
+     * @param {object} models - The models used for association.
+     */
+    static associate(models) {
+      // define association here
+      /**
+       * A progress entry belongs to a user.
+       * @memberof Progress
+       */
+      Progress.belongsTo(models.User, { foreignKey: 'userId' });
+      /**
+       * A progress entry belongs to a module.
+       * @memberof Progress
+       */
+      Progress.belongsTo(models.Module, { foreignKey: 'moduleId' });
+    }
+  }
+
+  /**
+   * Initializes the Progress model with its attributes and options.
+   * @memberof Progress
+   * @param {object} sequelize - The Sequelize instance.
+   * @param {object} DataTypes - An object containing Sequelize data types.
+   * @returns {Progress} The initialized Progress model.
+   */
+  Progress.init({
+    /**
+     * The ID of the related user.
+     * @type {number}
+     * @memberof Progress
+     * @instance
+     * @property {number} userId - The ID of the related user.
+     */
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    /**
+     * The ID of the related module.
+     * @type {number}
+     * @memberof Progress
+     * @instance
+     * @property {number} moduleId - The ID of the related module.
+     */
+    moduleId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    /**
+     * The percentage of progress in the module.
+     * @type {number}
+     * @memberof Progress
+     * @instance
+     * @property {number} progressPercentage - The percentage of progress in the module.
+     */
+    progressPercentage: {
+      type: DataTypes.DECIMAL(3, 2),
+      allowNull: true
+    }
+  }, {
+    sequelize,
+    modelName: 'Progress',
+  });
+
+  return Progress;
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Sun Jun 09 2024 10:54:18 GMT-0500 (Colombia Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

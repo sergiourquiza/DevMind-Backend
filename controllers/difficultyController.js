@@ -1,5 +1,10 @@
 const { Difficulty } = require('../models');
 
+/**
+ * Controller function to retrieve all difficulties.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getAll = async (req, res) => {
   try {
     const difficulties = await Difficulty.findAll();
@@ -9,6 +14,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to retrieve a specific difficulty by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -22,9 +32,13 @@ exports.getById = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to create a new difficulty.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.create = async (req, res) => {
     const { name } = req.body;
-    console.log("NOMBRE: ", req.body.name);
     try {
         const newDifficulty = await Difficulty.create({ name });
         res.status(201).json(newDifficulty);
@@ -33,6 +47,11 @@ exports.create = async (req, res) => {
     }
 };
 
+/**
+ * Controller function to update an existing difficulty by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.update = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
@@ -48,6 +67,11 @@ exports.update = async (req, res) => {
   }
 };
 
+/**
+ * Controller function to delete a difficulty by its ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.delete = async (req, res) => {
   const { id } = req.params;
   try {

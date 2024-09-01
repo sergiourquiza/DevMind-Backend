@@ -1,0 +1,21 @@
+{
+    "source": {
+      "include": [
+        "controllers",
+        "models",
+        "routes"
+      ],
+      "includePattern": ".js$",
+      "excludePattern": "(node_modules|migrations|seeders)"
+    },
+    "opts": {
+      "destination": "./docs",
+      "recurse": true,
+      "readme": "./README.md",
+      "template": "node_modules/docdash"
+    },
+    "templates": {
+      "cleverLinks": true,
+      "monospaceLinks": true
+    }
+}
