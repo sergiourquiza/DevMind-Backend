@@ -17,12 +17,17 @@ module.exports = (sequelize, DataTypes) => {
      * @param {object} models - The models used for association.
      */
     static associate(models) {
-      // define association here
       /**
        * Define a many-to-one relationship with the Exercise model.
        * @memberof Answer
        */
       Answer.belongsTo(models.Exercise, { foreignKey: 'exerciseId' });
+
+      /**
+       * Define a many-to-one relationship with the Input model.
+       * @memberof Answer
+       */
+      Answer.belongsTo(models.Input, { foreignKey: 'inputId' });
     }
   }
 
@@ -45,6 +50,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+
+    /**
+     * The ID of the related input.
+     * @type {number}
+     * @memberof Answer
+     * @instance
+     * @property {number} inputId - The ID of the related input.
+     */
+    inputId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    
     /**
      * The text of the answer.
      * @type {string}

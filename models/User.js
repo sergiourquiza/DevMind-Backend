@@ -51,6 +51,19 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: true,
     },
+
+    /**
+     * The full name of the user.
+     * @type {string}
+     * @memberof User
+     * @instance
+     * @property {string} fullName - The full name of the user.
+     */
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
     /**
      * The username of the user.
      * @type {string}
@@ -63,6 +76,22 @@ module.exports = (sequelize, DataTypes) => {
       unique: false,
       allowNull: false,
     },
+
+    /**
+     * The phone number of the user.
+     * @type {string}
+     * @memberof User
+     * @instance
+     * @property {string} phoneNumber - The phone number of the user.
+     */
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [7, 10]
+      }
+    },
+
     /**
      * The email of the user.
      * @type {string}
@@ -75,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
     },
+    
     /**
      * The password of the user.
      * @type {string}

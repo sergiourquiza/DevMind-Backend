@@ -19,6 +19,16 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      inputId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Inputs',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
       answer: {
         type: Sequelize.TEXT,
         allowNull: false,
