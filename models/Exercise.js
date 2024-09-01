@@ -39,6 +39,12 @@ module.exports = (sequelize, DataTypes) => {
        * @memberof Exercise
        */
       Exercise.hasMany(models.UserExercise, { foreignKey: 'exerciseId' });
+
+      /**
+       * Define a one-to-many relationship with the Input model.
+       * @memberof Exercise
+       */
+      Exercise.hasMany(models.Input, { foreignKey: 'exerciseId' });
     }
   }
 
