@@ -33,15 +33,15 @@ exports.getById = async (req, res) => {
 };
 
 /**
- * Controller function to retrieve an specific exercises by its difficultyID.
+ * Controller function to retrieve an specific exercises by its moduleID and difficultyID.
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.getByDifficultyId = async (req, res) => {
-  const { difficultyId } = req.params;
+exports.getByModuleIdAndDifficultyId = async (req, res) => {
+  const { moduleId, difficultyId } = req.params;
   try {
     const exercises = await Exercise.findAll({
-      where: { difficultyId: difficultyId },
+      where: { moduleId: moduleId, difficultyId: difficultyId },
       order: sequelize.random()
     });
     if (!exercises) {
