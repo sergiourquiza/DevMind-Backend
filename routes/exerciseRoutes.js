@@ -35,6 +35,15 @@ router.get('/', exerciseController.getAll);
 router.get('/:id', exerciseController.getById);
 
 /**
+ * Middleware to get all exercises by its difficultyID.
+ * @name getByDifficultyId
+ * @memberof module:routes/exerciseRoutes
+ * @function
+ * @inner
+ */
+router.get('/difficulty/:difficultyId', exerciseController.getByDifficultyId);
+
+/**
  * Middleware to update an existing exercise by its ID.
  * @name update
  * @memberof module:routes/exerciseRoutes

@@ -1,4 +1,4 @@
-const { Exercise } = require('../models');
+const { Exercise, sequelize } = require('../models');
 
 /**
  * Controller function to retrieve all exercises.
@@ -27,6 +27,27 @@ exports.getById = async (req, res) => {
       return res.status(404).json({ message: 'Exercise not found' });
     }
     res.status(200).json(exercise);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Controller function to retrieve an specific exercises by its difficultyID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.getByDifficultyId = async (req, res) => {
+  const { difficultyId } = req.params;
+  try {
+    const exercises = await Exercise.findAll({
+      where: { difficultyId: difficultyId },
+      order: sequelize.random()
+    });
+    if (!exercises) {
+      return res.status(404).json({ message: 'No exercises found' });
+    }
+    res.status(200).json(exercises);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
