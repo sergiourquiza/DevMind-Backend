@@ -39,7 +39,7 @@ exports.getById = async (req, res) => {
  * @param {object} res - The response object.
  */
 exports.create = async (req, res) => {
-  const { username, email, password, googleId } = req.body;
+  const { googleId, fullName, username, phoneNumber, email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   try {
@@ -49,13 +49,36 @@ exports.create = async (req, res) => {
     }
 
     const newUser = await User.create({
+      googleId,
+      fullName,
       username,
+      phoneNumber,
       email,
       password: hashedPassword,
-      googleId
+      
     });
-
     res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Update a user by their ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.update = async (req, res) => {
+  const { id } = req.params;
+  const { fullName, username, phoneNumber, password } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    await user.update({ fullName, username, phoneNumber, password: hashedPassword });
+    res.json({ message: 'User updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -66,7 +89,7 @@ exports.create = async (req, res) => {
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.update = async (req, res) => {
+exports.updatePassword = async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);

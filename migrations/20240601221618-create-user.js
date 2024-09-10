@@ -14,10 +14,21 @@ module.exports = {
         unique: true,
         allowNull: true,
       },
+      fullName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       username: {
         type: Sequelize.STRING,
-        unique: false,
+        unique: true,
         allowNull: false
+      },
+      phoneNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          len: [7, 10]
+        }
       },
       email: {
         type: Sequelize.STRING,

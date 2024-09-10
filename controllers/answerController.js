@@ -38,9 +38,9 @@ exports.getById = async (req, res) => {
  * @param {object} res - The response object.
  */
 exports.create = async (req, res) => {
-    const { exerciseId, answer } = req.body;
+    const { exerciseId, inputId, answer } = req.body;
     try {
-        const newAnswer = await Answer.create({ exerciseId, answer });
+        const newAnswer = await Answer.create({ exerciseId, inputId, answer });
         res.status(201).json(newAnswer);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -54,13 +54,13 @@ exports.create = async (req, res) => {
  */
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { exerciseId, answer } = req.body;
+  const { exerciseId, inputId, answer } = req.body;
   try {
     const existingAnswer = await Answer.findByPk(id);
     if (!existingAnswer) {
       return res.status(404).json({ message: 'Answer not found' });
     }
-    await existingAnswer.update({ exerciseId, answer });
+    await existingAnswer.update({ exerciseId, inputId, answer });
     res.json({ message: 'Answer updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -2,41 +2,36 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Exercises', {
+    await queryInterface.createTable('Answers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      moduleId: {
+      exerciseId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'Modules',
+          model: 'Exercises',
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        allowNull: false,
+        onDelete: 'CASCADE'
       },
-      difficultyId: {
+      inputId: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         references: {
-          model: 'Difficulties',
+          model: 'Inputs',
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        allowNull: false,
+        onDelete: 'CASCADE'
       },
-      description: {
+      answer: {
         type: Sequelize.TEXT,
         allowNull: false,
-      },
-      requiresInput: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
@@ -49,6 +44,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Exercises');
+    await queryInterface.dropTable('Answers');
   }
 };

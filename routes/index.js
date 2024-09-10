@@ -16,6 +16,8 @@ const userRoutes = require('./userRoutes'); // Routes related to users
 const theoryRoutes = require('./theoryRoutes'); // Routes related to theories
 const exerciseRoutes = require('./exerciseRoutes'); // Routes related to exercises
 const userExerciseRoutes = require('./userExerciseRoutes'); // Routes related to user exercises
+const inputRoutes = require('./inputRoutes'); // Routes related to inputs
+const compileRoutes = require('./compileRoutes'); // Routes related to compile
 
 /**
  * Middleware that assigns routes to different URL segments.
@@ -33,6 +35,8 @@ router.use('/users', userRoutes); // Routes for users
 router.use('/theories', theoryRoutes); // Routes for theories
 router.use('/exercises', exerciseRoutes); // Routes for exercises
 router.use('/userExercises', userExerciseRoutes); // Routes for user exercises
+router.use('/inputs', inputRoutes); // Routes for inputs
+router.use('/compile', compileRoutes); // Routes for compile
 
 /**
  * Export the assigned routes.

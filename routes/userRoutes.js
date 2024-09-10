@@ -41,7 +41,16 @@ router.post('/', userController.create);
  * @function
  * @inner
  */
-router.put('/:id', userController.update);
+router.put('/update/:id', userController.update);
+
+/**
+ * Middleware to update a password user by its ID.
+ * @name update
+ * @memberof module:routes/userRoutes
+ * @function
+ * @inner
+ */
+router.put('/update-password/:id', userController.updatePassword);
 
 /**
  * Middleware to delete an existing user by its ID.
