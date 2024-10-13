@@ -105,6 +105,31 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false
     },
+
+    /**
+     * The code type of the exercise.
+     * @type {string}
+     * @memberof Exercise
+     * @instance
+     * @property {string} codeType - The code type of the exercise.
+     */
+    codeType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'script'
+    },
+
+    /**
+     * The function name of the exercise.
+     * @type {string}
+     * @memberof Exercise
+     * @instance
+     * @property {string} functionName - The function name of the exercise.
+     */
+    functionName: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'Exercise',

@@ -16,7 +16,6 @@ exports.compileCode = async (req, res) => {
         const inputs = exercise.requiresInput ? await Input.findAll({
             where: { exerciseId: exerciseId }
         }) : [];
-        
 
         const answers = await Answer.findAll({
             where: { exerciseId: exerciseId }
@@ -25,16 +24,15 @@ exports.compileCode = async (req, res) => {
         if (answers.length === 0) {
             return res.status(404).json({ error: 'Expected answers not found for the exercise' });
         }
-  
+
+        // Definir el tipo de código y el nombre de la función (si es una función)
+        const codeType = exercise.codeType; // Suponiendo que está almacenado en la base de datos
+        const functionName = exercise.functionName || ''; // Si no es una función, será una cadena vacía
+
         let results = [];
 
         // Verificar si el ejercicio requiere inputs
         if (exercise.requiresInput) {
-            // Obtener los inputs desde la base de datos
-            const inputs = await Input.findAll({
-                where: { exerciseId: exerciseId }
-            });
-
             // Iterar sobre los inputs y realizar la comparación con las respuestas
             for (let i = 0; i < inputs.length; i++) {
                 const input = inputs[i];
@@ -42,42 +40,47 @@ exports.compileCode = async (req, res) => {
 
                 if (expectedAnswer) {
                     const inputsData = input.input;
-                    const output = await compilerService.compileCode(language, code, inputsData);
-                    const outputLines = output.trim().split('\n');
+                    try {
+                        // Enviar el código proporcionado por el usuario, los inputs, codeType y functionName al servicio de compilación
+                        const output = await compilerService.compileCode(language, code, inputsData, codeType, functionName);
+                        const outputLines = output.trim().split('\n');
 
-                    // Comparar la salida con la respuesta esperada
-                    const isCorrect = outputLines.includes(expectedAnswer.answer.trim());
-                    const outputLine = outputLines.find(line => line.trim() === expectedAnswer.answer.trim()) || "Not found in output";
+                        // Comparar la salida con la respuesta esperada
+                        const isCorrect = outputLines.includes(expectedAnswer.answer.trim());
+                        const outputLine = outputLines.find(line => line.trim() === expectedAnswer.answer.trim()) || "Not found in output";
 
-                    results.push({
-                        inputId: input.id,
-                        expectedResult: expectedAnswer.answer.trim(),
-                        isCorrect: isCorrect,
-                        output: outputLine
-                    });
+                        results.push({
+                            inputId: input.id,
+                            expectedResult: expectedAnswer.answer.trim(),
+                            isCorrect: isCorrect,
+                            output: outputLine,
+                            outputNew: output
+                        });
+                    } catch (compileError) {
+                        return res.status(500).json({ error: 'Compilation failed', details: compileError });
+                    }
                 }
             }
         } else {
             // Si no se requieren inputs, simplemente ejecutamos el código y comparamos la salida
-            const output = await compilerService.compileCode(language, code, '');
-            
+            const output = await compilerService.compileCode(language, code, '', codeType, functionName);
             const outputLines = output.trim().split('\n');
-            
 
             results = answers.map(answer => {
                 const isCorrect = outputLines.includes(answer.answer.trim());
-                
                 const outputLine = outputLines.find(line => line.trim() === answer.answer.trim()) || "Not found in output";
 
                 return {
                     inputId: null,  // No hay input asociado
                     expectedResult: answer.answer.trim(),
                     isCorrect: isCorrect,
-                    output: outputLine
+                    output: outputLine,
+                    outputNew: output
                 };
             });
         }
 
+        // Enviar los resultados
         res.json({ results });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err.message });
