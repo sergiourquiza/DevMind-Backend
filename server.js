@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 // Use routes
-app.use('/', routes);
+app.use('/api', routes);
 
 // Port
 const PORT = process.env.PORT || 3000;

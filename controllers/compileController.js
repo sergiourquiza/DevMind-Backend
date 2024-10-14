@@ -2,9 +2,7 @@ const { Exercise, Input, Answer } = require('../models');
 const compilerService = require('../services/compilerService');
 
 exports.compileCode = async (req, res) => {
-    const { exerciseId, language, code } = req.body;
-
-    console.log(language);
+    const { exerciseId, moduleId, code } = req.body;
 
     try {
         const exercise = await Exercise.findByPk(exerciseId);
@@ -38,7 +36,7 @@ exports.compileCode = async (req, res) => {
                 if (expectedAnswer) {
                     const inputsData = input.input;
                     try {
-                        const output = await compilerService.compileCode(language, code, inputsData, codeType, functionName);
+                        const output = await compilerService.compileCode(moduleId, code, inputsData, codeType, functionName);
                         const outputLines = output.trim().split('\n');
 
                         const isCorrect = outputLines.includes(expectedAnswer.answer.trim());
@@ -57,7 +55,7 @@ exports.compileCode = async (req, res) => {
                 }
             }
         } else {
-            const output = await compilerService.compileCode(language, code, '', codeType, functionName);
+            const output = await compilerService.compileCode(moduleId, code, '', codeType, functionName);
             const outputLines = output.trim().split('\n');
 
             results = answers.map(answer => {
