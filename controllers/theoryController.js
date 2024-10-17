@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.findAll = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
     const theories = await Theory.findAll();
     res.status(200).json(theories);
@@ -34,12 +34,32 @@ exports.findAll = async (req, res) => {
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.findOne = async (req, res) => {
+exports.getById = async (req, res) => {
   const { id } = req.params;
   try {
     const theory = await Theory.findByPk(id);
     if (!theory) {
       return res.status(404).json({ message: 'Theory not found' });
+    }
+    res.status(200).json(theory);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Controller function to retrieve a specific theory by its module ID.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.getByModuleId = async (req, res) => {
+  const { moduleId } = req.params;
+  try {
+    const theory = await Theory.findOne({
+      where: { moduleId: moduleId }
+    });
+    if (!theory) {
+      return res.status(404).json({ message: 'Theory not found by its module id' });
     }
     res.status(200).json(theory);
   } catch (error) {

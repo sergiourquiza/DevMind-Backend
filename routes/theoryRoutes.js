@@ -17,22 +17,31 @@ const theoryController = require('../controllers/theoryController');
 router.post('/', theoryController.create);
 
 /**
- * Middleware to find all theories.
- * @name findAll
+ * Middleware to get all theories.
+ * @name getAll
  * @memberof module:routes/theoryRoutes
  * @function
  * @inner
  */
-router.get('/', theoryController.findAll);
+router.get('/', theoryController.getAll);
 
 /**
- * Middleware to find a theory by its ID.
- * @name findOne
+ * Middleware to get a theory by its ID.
+ * @name getById
  * @memberof module:routes/theoryRoutes
  * @function
  * @inner
  */
-router.get('/:id', theoryController.findOne);
+router.get('/:id', theoryController.getById);
+
+/**
+ * Middleware to get a theory by its module ID.
+ * @name getByModuleId
+ * @memberof module:routes/theoryRoutes
+ * @function
+ * @inner
+ */
+router.get('/module/:moduleId', theoryController.getByModuleId);
 
 /**
  * Middleware to update a theory by its ID.
