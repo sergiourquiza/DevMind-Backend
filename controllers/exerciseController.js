@@ -1,4 +1,5 @@
-const { Exercise, sequelize } = require('../models');
+const { Exercise, UserExercise, sequelize } = require('../models');
+const { Op } = require('sequelize');
 
 /**
  * Controller function to retrieve all exercises.
@@ -50,6 +51,38 @@ exports.getByModuleIdAndDifficultyId = async (req, res) => {
     res.status(200).json(exercises);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+/**
+ * Controller function to retrieve pending exercises for a user by moduleId and difficultyId.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.getPendingExercises = async (req, res) => {
+  const { userId, moduleId, difficultyId } = req.params;
+  
+  try {
+    const completedExercises = await UserExercise.findAll({
+      where: { userId: userId },
+      attributes: ['exerciseId'],
+    });
+    
+    const completedExerciseIds = completedExercises.map(e => e.exerciseId);
+    
+    const incompleteExercises = await Exercise.findAll({
+      where: {
+        moduleId: moduleId,
+        difficultyId: difficultyId,
+        id: {
+          [Op.notIn]: completedExerciseIds
+        }
+      },
+    });
+
+    res.status(200).json(incompleteExercises);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 

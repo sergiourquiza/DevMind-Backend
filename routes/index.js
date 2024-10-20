@@ -34,7 +34,7 @@ router.use('/auth', authRoutes); // Routes for authentication
 router.use('/users', userRoutes); // Routes for users
 router.use('/theories', theoryRoutes); // Routes for theories
 router.use('/exercises', exerciseRoutes); // Routes for exercises
-router.use('/userExercises', userExerciseRoutes); // Routes for user exercises
+router.use('/user-exercises', userExerciseRoutes); // Routes for user exercises
 router.use('/inputs', inputRoutes); // Routes for inputs
 router.use('/compile', compileRoutes); // Routes for compile
 

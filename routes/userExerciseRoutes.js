@@ -32,7 +32,7 @@ router.get('/:id', userExerciseController.getById);
  * @function
  * @inner
  */
-router.post('/', userExerciseController.create);
+router.post('/', userExerciseController.createOrUpdate);
 
 /**
  * Middleware to update an existing user exercise by its ID.

@@ -9,7 +9,7 @@ const compileCode = (language, code, inputs = '', codeType = 'script', functionN
         const escapedFunctionName = functionName.replace(/"/g, '\\"');
 
         // Comando para ejecutar el código dentro del contenedor Docker
-        const command = `sudo docker run --rm juancai0104/code-compiler:v1.0.2 /usr/local/bin/run_code.sh ${language} "${escapedCode}" "${escapedInputs}" ${codeType} "${escapedFunctionName}"`;
+        const command = `docker run --rm juancai0104/code-compiler:v1.0.2 /usr/local/bin/run_code.sh ${language} "${escapedCode}" "${escapedInputs}" ${codeType} "${escapedFunctionName}"`;
 
         exec(command, (error, stdout, stderr) => {
             if (error) {
