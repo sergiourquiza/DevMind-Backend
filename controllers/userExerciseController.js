@@ -1,4 +1,4 @@
-const { UserExercise } = require('../models');
+const { UserExercise, Exercise } = require('../models');
 
 /**
  * Get all user exercises.
@@ -119,7 +119,7 @@ exports.delete = async (req, res) => {
  * @returns {Object} JSON response confirming the deletion.
  */
 exports.deleteByLevel = async (req, res) => {
-  const { userId, moduleId, difficultyId } = req.body;
+  const { userId, moduleId, difficultyId } = req.params;
   
   try {
     const exercises = await Exercise.findAll({

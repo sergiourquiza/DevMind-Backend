@@ -59,6 +59,6 @@ router.delete('/:id', userExerciseController.delete);
  * @function
  * @inner
  */
-router.delete('/reset-level', userExerciseController.deleteByLevel);
+router.delete('/:userId/:moduleId/:difficultyId', userExerciseController.deleteByLevel);
 
 module.exports = router;
