@@ -111,3 +111,45 @@ exports.delete = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Delete all user exercises for a specific user, module, and difficulty level.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response confirming the deletion.
+ */
+exports.deleteByLevel = async (req, res) => {
+  const { userId, moduleId, difficultyId } = req.body;
+  
+  try {
+    const exercises = await Exercise.findAll({
+      where: {
+        moduleId,
+        difficultyId,
+      },
+    });
+
+    if (exercises.length === 0) {
+      return res.status(404).json({ message: 'No exercises found for this module and difficulty level' });
+    }
+
+    const exerciseIds = exercises.map(exercise => exercise.id);
+
+    const userExercises = await UserExercise.findAll({
+      where: {
+        userId,
+        exerciseId: exerciseIds,
+      },
+    });
+
+    if (userExercises.length === 0) {
+      return res.status(404).json({ message: 'No user exercises found for this user and level' });
+    }
+
+    await Promise.all(userExercises.map(userExercise => userExercise.destroy()));
+
+    res.json({ message: 'All user exercises for the level deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
