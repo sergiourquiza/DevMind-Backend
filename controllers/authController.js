@@ -8,10 +8,10 @@ const { User } = require('../models');
  * @param {object} res - The response object.
  */
 exports.signup = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { fullName, username, phoneNumber, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = await User.create({ fullName, username,phoneNumber, email, password: hashedPassword });
     res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -40,10 +40,15 @@ exports.login = (req, res, next) => {
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.logout = (req, res) => {
-  req.logout();
-  res.redirect('/');
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err); // Maneja el error si ocurre
+    }
+    res.redirect('/'); // Redirige al usuario después de cerrar sesión
+  });
 };
+
 
 /**
  * Controller function to initiate Google OAuth authentication.

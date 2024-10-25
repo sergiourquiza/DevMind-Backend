@@ -2,13 +2,30 @@
  * Module dependencies.
  * @module app
  */
-
 const express = require('express');
 const app = express();
+const session = require('express-session');
+const passport = require('passport');
 const routes = require('./routes');
+require('./config/passport'); // Cargar configuración de Passport
+
+
+const cors = require('cors');
+app.use(cors());
 
 // Middleware
 app.use(express.json());
+
+// Middleware de sesión (requerido por Passport para mantener la sesión entre solicitudes)
+app.use(session({
+  secret: '123', // Cambia esto por un secreto más seguro
+  resave: false,
+  saveUninitialized: true
+}));
+
+// Inicializar Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
  * Default route.
@@ -24,7 +41,7 @@ app.get('/', (req, res) => {
   res.send('--- Welcome to the DEV|MIND API, ready to serve you 😊 ---');
 });
 
-// Use routes
+// Use routes (aquí también se incluirán las rutas de autenticación)
 app.use('/api', routes);
 
 // Port

@@ -123,3 +123,25 @@ exports.delete = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Retrieves the authenticated user's profile.
+ * @param {object} req - The request object (must contain the authenticated user).
+ * @param {object} res - The response object.
+ */
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; 
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const { password, ...userWithoutPassword } = user.toJSON();
+
+    res.json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
