@@ -35,6 +35,27 @@ exports.getById = async (req, res) => {
 };
 
 /**
+ * Create or update a user exercise entry using upsert.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} JSON response containing the newly created or updated user exercise.
+ */
+exports.createOrUpdate = async (req, res) => {
+  const { userId, exerciseId } = req.body;
+  try {
+    const [newUserExercise, created] = await UserExercise.upsert({
+      userId,
+      exerciseId,
+      updatedAt: new Date()
+    });
+
+    res.status(201).json(newUserExercise);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
  * Create a new user exercise.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.

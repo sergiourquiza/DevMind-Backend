@@ -1,4 +1,4 @@
-const { Progress } = require('../models');
+const { Progress, Exercise, UserExercise } = require('../models');
 
 /**
  * Controller function to retrieve all progress entries.
@@ -33,6 +33,43 @@ exports.getById = async (req, res) => {
 };
 
 /**
+ * Controller function to create or update progress using upsert.
+ * This includes automatically calculating the total exercises and completed exercises by module.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.createOrUpdate = async (req, res) => {
+  const { userId, moduleId } = req.body;
+  try {
+    const totalExercises = await Exercise.count({
+      where: { moduleId }
+    });
+
+    if (totalExercises === 0) {
+      return res.status(404).json({ message: 'No exercises found for this module.' });
+    }
+
+    const completedExercises = await UserExercise.count({
+      where: { userId },
+      include: [{ model: Exercise, where: { moduleId } }]
+    });
+
+    const progressPercentage = (completedExercises / totalExercises) * 100;
+
+    const newProgress = await Progress.upsert({
+      userId,
+      moduleId,
+      progressPercentage,
+      updatedAt: new Date()
+    });
+
+    res.status(201).json(newProgress);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+/**
  * Controller function to create a new progress entry.
  * @param {object} req - The request object.
  * @param {object} res - The response object.
@@ -49,17 +86,35 @@ exports.create = async (req, res) => {
 
 /**
  * Controller function to update an existing progress entry by its ID.
+ * This includes recalculating the total and completed exercises by module.
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { userId, moduleId, progressPercentage } = req.body;
+  const { userId, moduleId } = req.body;
+
   try {
     const progress = await Progress.findByPk(id);
     if (!progress) {
       return res.status(404).json({ message: 'Progress not found' });
     }
+
+    const totalExercises = await Exercise.count({
+      where: { moduleId }
+    });
+
+    if (totalExercises === 0) {
+      return res.status(404).json({ message: 'No exercises found for this module.' });
+    }
+
+    const completedExercises = await UserExercise.count({
+      where: { userId },
+      include: [{ model: Exercise, where: { moduleId } }]
+    });
+
+    const progressPercentage = (completedExercises / totalExercises) * 100;
+
     await progress.update({ userId, moduleId, progressPercentage });
     res.json({ message: 'Progress updated successfully' });
   } catch (error) {
