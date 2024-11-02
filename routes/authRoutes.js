@@ -61,4 +61,7 @@ router.get('/google/callback', authController.googleCallback, authController.goo
  */
 router.get('/protected', authController.protected);
 
+router.post('/check-email', authController.checkEmail);
+router.post('/check-username', authController.checkUsername);
+
 module.exports = router;

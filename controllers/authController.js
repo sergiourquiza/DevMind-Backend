@@ -85,3 +85,30 @@ exports.protected = (req, res) => {
     res.redirect('/auth/google');
   }
 };
+
+// En tu archivo de controlador de autenticación
+exports.checkEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+    res.status(200).json({ message: 'Email available' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.checkUsername = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+    res.status(200).json({ message: 'Username available' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
