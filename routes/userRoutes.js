@@ -61,4 +61,6 @@ router.put('/update-password/:id', userController.updatePassword);
  */
 router.delete('/:id', userController.delete);
 
+router.get('/profile/:id', userController.getProfile);
+
 module.exports = router;

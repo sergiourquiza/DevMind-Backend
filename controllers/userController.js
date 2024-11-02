@@ -70,19 +70,34 @@ exports.create = async (req, res) => {
  */
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { fullName, username, phoneNumber, password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  const { fullName, username, phoneNumber, email, password } = req.body; // Agregamos 'email'
+  
   try {
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    await user.update({ fullName, username, phoneNumber, password: hashedPassword });
+
+    // Crear objeto con los datos a actualizar, incluyendo 'email'
+    const updateData = {
+      fullName,
+      username,
+      phoneNumber,
+      email, // Incluir email
+    };
+
+    // Solo actualizar el password si se proporciona uno nuevo
+    if (password) {
+      updateData.password = bcrypt.hashSync(password, 10);
+    }
+
+    await user.update(updateData);
     res.json({ message: 'User updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 /**
  * Updates the password of a user by their ID.
@@ -91,19 +106,26 @@ exports.update = async (req, res) => {
  */
 exports.updatePassword = async (req, res) => {
   const { id } = req.params;
-  const { password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  const { newPassword } = req.body; // Cambiar a newPassword
+  if (!newPassword) {
+    return res.status(400).json({ message: 'New password is required' });
+  }
+
   try {
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // Hashear la nueva contraseña
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
     await user.update({ password: hashedPassword });
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 /**
  * Deletes a user account from the database.
