@@ -52,6 +52,8 @@ router.get('/google', authController.googleAuth);
  */
 router.get('/google/callback', authController.googleCallback, authController.googleRedirect);
 
+router.post('/google-signin', authController.googleSignin);
+
 /**
  * Middleware for accessing protected resources.
  * @name protected

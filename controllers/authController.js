@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User } = require('../models');
-
+const { Op } = require('sequelize');
 /**
  * Controller function to sign up a new user.
  * @param {object} req - The request object.
@@ -110,5 +110,80 @@ exports.checkUsername = async (req, res) => {
     res.status(200).json({ message: 'Username available' });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// En el archivo del controlador de autenticación (Node.js)
+
+exports.googleSignin = async (req, res) => {
+  try {
+    console.log('Datos recibidos:', req.body);
+    
+    const { id, googleId, email, fullName, username, phoneNumber } = req.body;
+    const googleIdentifier = googleId || id;
+
+    if (!googleIdentifier || !email) {
+      return res.status(400).json({
+        error: 'Datos incompletos',
+        receivedData: req.body
+      });
+    }
+
+    
+    const existingUser = await User.findOne({
+      where: {
+        email,
+        googleId: null 
+      }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        error: 'Este correo electrónico ya está registrado con una cuenta normal. Por favor, inicie sesión con su contraseña o use otro correo.',
+        code: 'EMAIL_EXISTS'
+      });
+    }
+
+    
+    let user = await User.findOne({
+      where: {
+        [Op.or]: [
+          { email },
+          { googleId: googleIdentifier }
+        ]
+      }
+    });
+
+    if (!user) {
+      // Crear nuevo usuario
+      user = await User.create({
+        googleId: googleIdentifier,
+        fullName,
+        username,
+        email,
+        phoneNumber: phoneNumber || null
+      });
+    } else {
+      // Actualizar usuario existente
+      await user.update({
+        googleId: googleIdentifier,
+        fullName: fullName || user.fullName,
+        username: username || user.username,
+        phoneNumber: phoneNumber || user.phoneNumber
+      });
+    }
+
+    // Preparar respuesta
+    const userResponse = user.toJSON();
+    delete userResponse.password;
+
+    return res.status(200).json(userResponse);
+
+  } catch (error) {
+    console.error('Error en googleSignin:', error);
+    return res.status(500).json({
+      error: 'Error interno del servidor',
+      details: error.message
+    });
   }
 };

@@ -86,10 +86,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     phoneNumber: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [7, 10]
-      }
+      allowNull: true
     },
 
     /**
@@ -114,7 +111,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     password: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+
     } 
   }, {
     sequelize,

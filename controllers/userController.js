@@ -40,28 +40,55 @@ exports.getById = async (req, res) => {
  */
 exports.create = async (req, res) => {
   const { googleId, fullName, username, phoneNumber, email, password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ 
+      where: { 
+        [Op.or]: [
+          { email },
+          ...(googleId ? [{ googleId }] : []) // Solo buscar por googleId si existe
+        ] 
+      } 
+    });
+    
     if (existingUser) {
       return res.status(400).json({ error: 'The user already exists' });
     }
 
-    const newUser = await User.create({
+    // Crear objeto con datos base del usuario
+    const userData = {
       googleId,
       fullName,
       username,
-      phoneNumber,
-      email,
-      password: hashedPassword,
-      
-    });
-    res.status(201).json(newUser);
+      email
+    };
+
+    // Solo agregar phoneNumber si no está vacío
+    if (phoneNumber && phoneNumber.trim() !== '') {
+      userData.phoneNumber = phoneNumber;
+    }
+
+    // Solo agregar password hasheado si se proporciona uno
+    if (password) {
+      userData.password = bcrypt.hashSync(password, 10);
+    }
+
+    const newUser = await User.create(userData);
+    
+    // Excluir el password de la respuesta
+    const { password: _, ...userWithoutPassword } = newUser.toJSON();
+    res.status(201).json(userWithoutPassword);
+    
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error en create:', error); // Para depuración en el servidor
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      details: error.message 
+    });
   }
 };
+
+
 
 /**
  * Update a user by their ID.
