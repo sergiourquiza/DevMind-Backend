@@ -66,4 +66,7 @@ router.get('/protected', authController.protected);
 router.post('/check-email', authController.checkEmail);
 router.post('/check-username', authController.checkUsername);
 
+router.post('/reset-password', authController.resetPassword);
+router.post('/confirm-reset-password', authController.confirmResetPassword);
+
 module.exports = router;

@@ -111,9 +111,32 @@ module.exports = (sequelize, DataTypes) => {
      */
     password: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
+    },
+    
+    /**
+     * The reset token of the user.
+     * @type {string}
+     * @memberof User
+     * @instance
+     * @property {string} resetToken - The reset token of the user.
+     */
+    resetToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
 
-    } 
+    /**
+     * The reset token expires date of the user.
+     * @type {Date}
+     * @memberof User
+     * @instance
+     * @property {Date} resetExpires - The reset token expires date of the user.
+     */
+    resetExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'User',

@@ -2,6 +2,9 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User } = require('../models');
 const { Op } = require('sequelize');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
 /**
  * Controller function to sign up a new user.
  * @param {object} req - The request object.
@@ -185,5 +188,72 @@ exports.googleSignin = async (req, res) => {
       error: 'Error interno del servidor',
       details: error.message
     });
+  }
+};
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'developermind1x@gmail.com',
+    pass: 'pbax tivl cqpm rmbq'
+  },
+});
+
+exports.resetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(400).json({ error: 'El correo electrónico no está registrado.' });
+    }
+
+    const resetToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const resetExpires = Date.now() + 3600000;
+
+    await user.update({ resetToken, resetExpires });
+
+    await transporter.sendMail({
+      to: user.email,
+      from: 'developermind1x@gmail.com',
+      subject: 'Código para restablecer tu contraseña',
+      text: `Usa este código para restablecer tu contraseña en la app: ${resetToken}. Este código expira en 1 hora.`,
+    });
+
+    res.status(200).json({ message: 'Correo de restablecimiento enviado.' });
+  } catch (error) {
+    console.error('Error en resetPassword:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+};
+
+exports.confirmResetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: {
+        resetToken: token,
+        resetExpires: { [Op.gt]: Date.now() },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'El token es inválido o ha expirado.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+
+    await user.update({
+      password: hashedPassword,
+      resetToken: null,
+      resetExpires: null
+    });
+
+    res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
+  } catch (error) {
+    console.error('Error en confirmResetPassword:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
   }
 };
