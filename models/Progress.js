@@ -69,8 +69,9 @@ module.exports = (sequelize, DataTypes) => {
      * @property {number} progressPercentage - The percentage of progress in the module.
      */
     progressPercentage: {
-      type: DataTypes.DECIMAL(3, 2),
-      allowNull: true
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

@@ -140,3 +140,32 @@ exports.delete = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Endpoint para obtener el progreso de un usuario en un módulo específico.
+ * @param {object} req - El objeto de solicitud.
+ * @param {object} res - El objeto de respuesta.
+ */
+exports.getUserProgressInModule = async (req, res) => {
+  const { userId, moduleId } = req.params;
+  console.log('Received request for userId:', userId, 'moduleId:', moduleId); 
+  try {
+    const progress = await Progress.findOne({
+      where: { userId, moduleId },
+    });
+
+    if (!progress) {
+      console.log('No progress found for these parameters'); 
+      return res.status(404).json({ 
+        message: 'Progress not found for the specified module and user.',
+        userId,
+        moduleId 
+      });
+    }
+    console.log('Found progress:', progress); 
+    res.json(progress);
+  } catch (error) {
+    console.error('Error:', error); 
+    res.status(500).json({ error: error.message });
+  }
+};

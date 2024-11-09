@@ -52,4 +52,15 @@ router.put('/:id', progressController.update);
  */
 router.delete('/:id', progressController.delete);
 
+
+/**
+ * Middleware to get user progress in a module.
+ * @name getUserProgressInModule
+ * @memberof module:routes/progressRoutes
+ * @function
+ * @inner
+ */
+router.get('/progress/:userId/:moduleId', progressController.getUserProgressInModule);
+
+
 module.exports = router;

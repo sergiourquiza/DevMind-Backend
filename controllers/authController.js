@@ -213,7 +213,7 @@ const sendPasswordResetEmail = async (user, resetToken) => {
       <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <!-- Header with logo -->
           <div style="text-align: center; margin-bottom: 30px;">
-              <img src="https://github.com/sergiourquiza/DevMind-Backend/blob/dev/docs/img/devmind_logo.png" alt="Logo" style="height: 60px;"/>
+              <img src="https://drive.google.com/uc?export=view&id=1gZpH_WwSmHf-Ql-3Z2xa_YEQqAetZ7Ew" alt="Logo" style="height: 100px;"/>
           </div>
           
           <!-- Main content -->
@@ -243,7 +243,7 @@ const sendPasswordResetEmail = async (user, resetToken) => {
                   Este es un correo electrónico automático. Por favor, no respondas a este mensaje.
               </p>
               <p style="margin-bottom: 10px;">
-                  &copy; ${new Date().getFullYear()} DEV|MIND. Todos los derechos reservados.
+                  &copy; ${new Date().getFullYear()} DEV | MIND. Todos los derechos reservados.
               </p>
               <p>
                   <a href="#" style="color: #0078d4; text-decoration: none;">Términos de servicio</a> • 

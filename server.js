@@ -7,7 +7,7 @@ const app = express();
 const session = require('express-session');
 const passport = require('passport');
 const routes = require('./routes');
-require('./config/passport'); // Cargar configuración de Passport
+require('./config/passport'); 
 
 
 const cors = require('cors');
@@ -18,7 +18,7 @@ app.use(express.json());
 
 // Middleware de sesión (requerido por Passport para mantener la sesión entre solicitudes)
 app.use(session({
-  secret: '123', // Cambia esto por un secreto más seguro
+  secret: '123',
   resave: false,
   saveUninitialized: true
 }));
