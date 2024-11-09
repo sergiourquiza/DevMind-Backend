@@ -191,6 +191,8 @@ exports.googleSignin = async (req, res) => {
   }
 };
 
+
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -198,6 +200,73 @@ const transporter = nodemailer.createTransport({
     pass: 'pbax tivl cqpm rmbq'
   },
 });
+
+// Función de envío de correo separada del controlador
+const sendPasswordResetEmail = async (user, resetToken) => {
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="UTF-8">
+  </head>
+  <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+          <!-- Header with logo -->
+          <div style="text-align: center; margin-bottom: 30px;">
+              <img src="https://github.com/sergiourquiza/DevMind-Backend/blob/dev/docs/img/devmind_logo.png" alt="Logo" style="height: 60px;"/>
+          </div>
+          
+          <!-- Main content -->
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h1 style="color: #0078d4; font-size: 24px; margin: 0 0 20px 0;">Restablecimiento de contraseña</h1>
+              
+              <p style="color: #333333; font-size: 16px; line-height: 1.5; margin-bottom: 25px;">
+                  Se ha solicitado el restablecimiento de la contraseña para tu cuenta. Utiliza el siguiente código de verificación:
+              </p>
+              
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; text-align: center; margin-bottom: 25px;">
+                  <span style="font-family: monospace; font-size: 24px; font-weight: bold; color: #0078d4;">${resetToken}</span>
+              </div>
+              
+              <p style="color: #333333; font-size: 16px; line-height: 1.5; margin-bottom: 25px;">
+                  Este código expirará en <strong>1 hora</strong>. Por razones de seguridad, no compartas este código con nadie.
+              </p>
+              
+              <p style="color: #666666; font-size: 14px;">
+                  Si no solicitaste este cambio, puedes ignorar este mensaje. Tu cuenta está segura.
+              </p>
+          </div>
+          
+          <!-- Footer -->
+          <div style="text-align: center; margin-top: 30px; color: #666666; font-size: 12px;">
+              <p style="margin-bottom: 10px;">
+                  Este es un correo electrónico automático. Por favor, no respondas a este mensaje.
+              </p>
+              <p style="margin-bottom: 10px;">
+                  &copy; ${new Date().getFullYear()} DEV|MIND. Todos los derechos reservados.
+              </p>
+              <p>
+                  <a href="#" style="color: #0078d4; text-decoration: none;">Términos de servicio</a> • 
+                  <a href="#" style="color: #0078d4; text-decoration: none;">Política de privacidad</a>
+              </p>
+          </div>
+      </div>
+  </body>
+  </html>
+  `;
+  
+  const mailOptions = {
+    to: user.email,
+    from: 'developermind1x@gmail.com',
+    subject: 'Restablece tu contraseña',
+    text: `Usa este código para restablecer tu contraseña en la app: ${resetToken}. Este código expira en 1 hora.`,
+    html: htmlContent 
+  };
+
+  await transporter.sendMail(mailOptions);
+  console.log('Correo de restablecimiento enviado a:', user.email);
+};
+
 
 exports.resetPassword = async (req, res) => {
   const { email } = req.body;
@@ -209,18 +278,21 @@ exports.resetPassword = async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const resetExpires = Date.now() + 3600000;
+    const resetExpires = Date.now() + 3600000; // 1 hora
 
     await user.update({ resetToken, resetExpires });
 
-    await transporter.sendMail({
-      to: user.email,
-      from: 'developermind1x@gmail.com',
-      subject: 'Código para restablecer tu contraseña',
-      text: `Usa este código para restablecer tu contraseña en la app: ${resetToken}. Este código expira en 1 hora.`,
-    });
+    // Enviar el correo
+    try {
+      await sendPasswordResetEmail(user, resetToken);
+      res.status(200).json({ message: 'Correo de restablecimiento enviado.' });
+    } catch (emailError) {
+      console.error('Error al enviar el correo:', emailError);
+      // Si falla el envío del correo, limpiamos el token
+      await user.update({ resetToken: null, resetExpires: null });
+      res.status(500).json({ error: 'Error al enviar el correo de restablecimiento.' });
+    }
 
-    res.status(200).json({ message: 'Correo de restablecimiento enviado.' });
   } catch (error) {
     console.error('Error en resetPassword:', error);
     res.status(500).json({ error: 'Error interno del servidor.' });
