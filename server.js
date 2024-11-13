@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 app.use('/api', routes);
 
 // Port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APIURL;
 /**
  * Start the server.
  * @name listen
