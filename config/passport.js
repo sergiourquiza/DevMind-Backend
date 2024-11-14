@@ -27,16 +27,21 @@ async (accessToken, refreshToken, profile, done) => {
 }));
 
 // Local Strategy
+// Local Strategy
 passport.use(new LocalStrategy(
-  async (username, password, done) => {
+  {
+    usernameField: 'email',    // Especificar que usaremos email en lugar de username
+    passwordField: 'password'
+  },
+  async (email, password, done) => {
     try {
-      const user = await User.findOne({ where: { username: username } });
+      const user = await User.findOne({ where: { email: email } });
       if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
+        return done(null, false, { message: 'Email no encontrado.' });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false, { message: 'Contraseña incorrecta.' });
       }
       return done(null, user);
     } catch (err) {
@@ -45,6 +50,7 @@ passport.use(new LocalStrategy(
   }
 ));
 
+// Serializing and deserializing the user
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

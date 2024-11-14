@@ -52,4 +52,13 @@ router.put('/:id', userExerciseController.update);
  */
 router.delete('/:id', userExerciseController.delete);
 
+/**
+ * Middleware to delete existing user exercises by its userId, moduleId and difficultyId.
+ * @name delete
+ * @memberof module:routes/userExerciseRoutes
+ * @function
+ * @inner
+ */
+router.delete('/:userId/:moduleId/:difficultyId', userExerciseController.deleteByLevel);
+
 module.exports = router;

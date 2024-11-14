@@ -52,6 +52,8 @@ router.get('/google', authController.googleAuth);
  */
 router.get('/google/callback', authController.googleCallback, authController.googleRedirect);
 
+router.post('/google-signin', authController.googleSignin);
+
 /**
  * Middleware for accessing protected resources.
  * @name protected
@@ -60,5 +62,11 @@ router.get('/google/callback', authController.googleCallback, authController.goo
  * @inner
  */
 router.get('/protected', authController.protected);
+
+router.post('/check-email', authController.checkEmail);
+router.post('/check-username', authController.checkUsername);
+
+router.post('/reset-password', authController.resetPassword);
+router.post('/confirm-reset-password', authController.confirmResetPassword);
 
 module.exports = router;

@@ -1,4 +1,5 @@
-const { Exercise, sequelize } = require('../models');
+const { Exercise, UserExercise, sequelize } = require('../models');
+const { Op } = require('sequelize');
 
 /**
  * Controller function to retrieve all exercises.
@@ -33,15 +34,15 @@ exports.getById = async (req, res) => {
 };
 
 /**
- * Controller function to retrieve an specific exercises by its difficultyID.
+ * Controller function to retrieve an specific exercises by its moduleID and difficultyID.
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
-exports.getByDifficultyId = async (req, res) => {
-  const { difficultyId } = req.params;
+exports.getByModuleIdAndDifficultyId = async (req, res) => {
+  const { moduleId, difficultyId } = req.params;
   try {
     const exercises = await Exercise.findAll({
-      where: { difficultyId: difficultyId },
+      where: { moduleId: moduleId, difficultyId: difficultyId },
       order: sequelize.random()
     });
     if (!exercises) {
@@ -54,14 +55,46 @@ exports.getByDifficultyId = async (req, res) => {
 };
 
 /**
+ * Controller function to retrieve pending exercises for a user by moduleId and difficultyId.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
+exports.getPendingExercises = async (req, res) => {
+  const { userId, moduleId, difficultyId } = req.params;
+  
+  try {
+    const completedExercises = await UserExercise.findAll({
+      where: { userId: userId },
+      attributes: ['exerciseId'],
+    });
+    
+    const completedExerciseIds = completedExercises.map(e => e.exerciseId);
+    
+    const incompleteExercises = await Exercise.findAll({
+      where: {
+        moduleId: moduleId,
+        difficultyId: difficultyId,
+        id: {
+          [Op.notIn]: completedExerciseIds
+        }
+      },
+    });
+
+    res.status(200).json(incompleteExercises);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
  * Controller function to create a new exercise.
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  */
 exports.create = async (req, res) => {
-  const { moduleId, difficultyId, description, requiresInput } = req.body;
+  const { moduleId, difficultyId, description, requiresInput, codeType, functionName } = req.body;
   try {
-    const newExercise = await Exercise.create({ moduleId, difficultyId, description, requiresInput });
+    const newExercise = await Exercise.create({ moduleId, difficultyId, description, requiresInput, codeType, functionName });
     res.status(201).json(newExercise);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -75,13 +108,13 @@ exports.create = async (req, res) => {
  */
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { moduleId, difficultyId, description, requiresInput } = req.body;
+  const { moduleId, difficultyId, description, requiresInput, codeType, functionName } = req.body;
   try {
     const exercise = await Exercise.findByPk(id);
     if (!exercise) {
       return res.status(404).json({ message: 'Exercise not found' });
     }
-    await exercise.update({ moduleId, difficultyId, description, requiresInput });
+    await exercise.update({ moduleId, difficultyId, description, requiresInput, codeType, functionName });
     res.status(200).json({ message: 'Exercise updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
