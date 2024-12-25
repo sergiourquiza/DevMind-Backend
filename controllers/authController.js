@@ -1,9 +1,12 @@
+require('dotenv').config();
+
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User } = require('../models');
 const { Op } = require('sequelize');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { EMAIL_USER, EMAIL_PASS } = process.env;
 
 /**
  * Controller function to sign up a new user.
@@ -196,8 +199,8 @@ exports.googleSignin = async (req, res) => {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'developermind1x@gmail.com',
-    pass: 'pbax tivl cqpm rmbq'
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
   },
 });
 

@@ -1,10 +1,17 @@
+require('dotenv').config();
+
 const nodemailer = require('nodemailer');
+const { EMAIL_USER, EMAIL_PASS } = process.env;
+
+if (!EMAIL_USER || !EMAIL_PASS) {
+  throw new Error("Las variables de entorno EMAIL_USER o EMAIL_PASS no están definidas.");
+}
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'developermind1x@gmail.com',
-    pass: 'pbax tivl cqpm rmbq'
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
   },
 });
 
